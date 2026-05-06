@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Diário de Cuidados para Pets</title>
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<header class="cabecalho">
+  <div class="cabecalho-interno">
+
+    <a class="logo" href="#" onclick="mostrarTela('dashboard'); return false;">
+      <span>🐾</span>
+      <span>PetCare</span>
+    </a>
+
+    <nav class="nav">
+      <button class="btn-nav ativo" data-tela="dashboard">🏠 Início</button>
+      <button class="btn-nav"       data-tela="pets">🐶 Pets</button>
+      <button class="btn-nav"       data-tela="registros">📋 Registros</button>
+    </nav>
+
+  </div>
+</header>
+
+<main class="principal">
+
+  <section id="tela-dashboard" class="tela ativa">
+
+    <div class="banner">
+      <h1>Bem-vindo ao PetCare! 🐾</h1>
+      <p>Acompanhe a saúde, alimentação e bem-estar dos seus pets.</p>
+    </div>
+
+    <div class="grid-stats">
+      <div class="card-stat" onclick="mostrarTela('pets')">
+        <div class="icone">🐾</div>
+        <div class="numero" id="stat-pets">—</div>
+        <div class="rotulo">Pets Cadastrados</div>
+      </div>
+      <div class="card-stat" onclick="mostrarTela('registros')">
+        <div class="icone">📋</div>
+        <div class="numero" id="stat-registros">—</div>
+        <div class="rotulo">Total de Registros</div>
+      </div>
+      <div class="card-stat">
+        <div class="icone">📅</div>
+        <div class="numero" id="stat-hoje">—</div>
+        <div class="rotulo">Cuidados Hoje</div>
+      </div>
+      <div class="card-stat">
+        <div class="icone">⏰</div>
+        <div class="numero" id="stat-proximos">—</div>
+        <div class="rotulo">Próximos Agendados</div>
+      </div>
+    </div>
+
+    <div class="cabecalho-secao">
+      <h2 class="titulo-secao">Atividade Recente</h2>
+    </div>
+    <div id="atividade-recente" style="margin-bottom: 2rem;">
+      <p>Carregando...</p>
+    </div>
+
+    <div class="cabecalho-secao">
+      <h2 class="titulo-secao">Meus Pets</h2>
+      <button class="btn btn-primario" onclick="abrirModalPet()">+ Novo Pet</button>
+    </div>
+    <div id="pets-dashboard" class="grid-pets">
+      <p>Carregando...</p>
+    </div>
+
+  </section>
+
+  <section id="tela-pets" class="tela">
+
+    <div class="cabecalho-secao">
+      <h2 class="titulo-secao">🐾 Meus Pets</h2>
+      <button class="btn btn-primario" onclick="abrirModalPet()">+ Novo Pet</button>
+    </div>
+
+    <div class="barra-busca">
+      <input type="text"
+             id="input-busca-pet"
+             class="input-busca"
+             placeholder="🔍 Buscar pet pelo nome...">
+
+      <select id="filtro-especie" class="select-filtro">
+        <option value="">Todas as espécies</option>
+        <option value="dog">🐶 Cachorro</option>
+        <option value="cat">🐱 Gato</option>
+        <option value="rabbit">🐰 Coelho</option>
+        <option value="bird">🦜 Pássaro</option>
+        <option value="fish">🐟 Peixe</option>
+        <option value="hamster">🐹 Hamster</option>
+        <option value="reptile">🦎 Réptil</option>
+        <option value="other">🐾 Outro</option>
+      </select>
+    </div>
+
+    <div id="grid-pets" class="grid-pets"></div>
+
+  </section>
+
+  <section id="tela-registros" class="tela">
+
+    <div class="cabecalho-secao">
+      <h2 class="titulo-secao">📋 Registros de Cuidados</h2>
+      <button class="btn btn-primario" onclick="abrirModalRegistro()">+ Novo Registro</button>
+    </div>
+
+    <div class="barra-busca">
+      <select id="filtro-tipo" class="select-filtro">
+        <option value="">Todos os tipos</option>
+        <option value="feeding">🍖 Alimentação</option>
+        <option value="cleaning">🧹 Limpeza</option>
+        <option value="vet">🩺 Veterinário</option>
+        <option value="medication">💊 Medicação</option>
+        <option value="exercise">🏃 Exercício</option>
+        <option value="grooming">✂️ Tosa/Banho</option>
+        <option value="other">📝 Outro</option>
+      </select>
+
+      <select id="filtro-pet" class="select-filtro">
+        <option value="">Todos os pets</option>
+      </select>
+    </div>
+
+    <div id="lista-todos-registros"></div>
+
+  </section>
+
+  <section id="tela-detalhe" class="tela">
+
+    <div style="margin-bottom: 1rem;">
+      <button class="btn btn-secundario" onclick="mostrarTela('pets')">← Voltar</button>
+    </div>
+
+    <div class="detalhe-topo"></div>
+
+    <div id="obs-detalhe" class="caixa-obs" style="display: none;"></div>
+
+    <div class="cabecalho-secao">
+      <h2 class="titulo-secao">Histórico de Cuidados</h2>
+      <button class="btn btn-primario" onclick="abrirModalRegistro(estado.petAtivo)">+ Novo Cuidado</button>
+    </div>
+
+    <div class="abas">
+      <button class="aba ativa" data-tipo="all">Todos</button>
+      <button class="aba" data-tipo="feeding">🍖 Alimentação</button>
+      <button class="aba" data-tipo="cleaning">🧹 Limpeza</button>
+      <button class="aba" data-tipo="vet">🩺 Veterinário</button>
+      <button class="aba" data-tipo="medication">💊 Medicação</button>
+      <button class="aba" data-tipo="exercise">🏃 Exercício</button>
+      <button class="aba" data-tipo="grooming">✂️ Tosa/Banho</button>
+      <button class="aba" data-tipo="other">📝 Outro</button>
+    </div>
+
+    <div id="registros-detalhe"></div>
+
+  </section>
+
+</main>
+
+<div id="modal-pet" class="fundo-modal">
+  <div class="modal">
+
+    <div class="modal-topo">
+      <h2 class="modal-titulo" id="titulo-modal-pet">Novo Pet</h2>
+      <button class="btn-fechar-modal" onclick="fecharModalPet()">✕</button>
+    </div>
+
+    <form id="form-pet" onsubmit="event.preventDefault(); salvarPet()">
+      <div class="grade-form">
+
+        <div class="grupo-form col-inteira">
+          <label class="label-form">Escolha um avatar</label>
+          <div class="seletor-emoji">
+            <span class="opcao-emoji selecionado" data-emoji="🐶">🐶</span>
+            <span class="opcao-emoji" data-emoji="🐱">🐱</span>
+            <span class="opcao-emoji" data-emoji="🐰">🐰</span>
+            <span class="opcao-emoji" data-emoji="🦜">🦜</span>
+            <span class="opcao-emoji" data-emoji="🐟">🐟</span>
+            <span class="opcao-emoji" data-emoji="🐹">🐹</span>
+            <span class="opcao-emoji" data-emoji="🦎">🦎</span>
+            <span class="opcao-emoji" data-emoji="🐢">🐢</span>
+            <span class="opcao-emoji" data-emoji="🐇">🐇</span>
+            <span class="opcao-emoji" data-emoji="🦊">🦊</span>
+            <span class="opcao-emoji" data-emoji="🐸">🐸</span>
+            <span class="opcao-emoji" data-emoji="🐾">🐾</span>
+          </div>
+        </div>
+        
+        <div class="grupo-form">
+          <label class="label-form" for="nome-pet">Nome *</label>
+          <input type="text" id="nome-pet" class="input-form"
+                 placeholder="Ex: Rex, Luna, Bolinha..." maxlength="50">
+          <span class="msg-erro" id="erro-nome-pet"></span>
+        </div>
+
+        <div class="grupo-form">
+          <label class="label-form" for="especie-pet">Espécie *</label>
+          <select id="especie-pet" class="select-form">
+            <option value="">Selecione...</option>
+            <option value="dog">🐶 Cachorro</option>
+            <option value="cat">🐱 Gato</option>
+            <option value="rabbit">🐰 Coelho</option>
+            <option value="bird">🦜 Pássaro</option>
+            <option value="fish">🐟 Peixe</option>
+            <option value="hamster">🐹 Hamster</option>
+            <option value="reptile">🦎 Réptil</option>
+            <option value="other">🐾 Outro</option>
+          </select>
+          <span class="msg-erro" id="erro-especie-pet"></span>
+        </div>
+
+        <div class="grupo-form">
+          <label class="label-form" for="raca-pet">Raça</label>
+          <select id="raca-pet" class="select-form">
+            <option value="">Selecione a espécie primeiro...</option>
+          </select>
+        </div>
+
+        <div class="grupo-form">
+          <label class="label-form" for="nascimento-pet">Data de Nascimento</label>
+          <input type="date" id="nascimento-pet" class="input-form" id="nascimento-pet">
+          <span class="msg-erro" id="erro-nasc-pet"></span>
+        </div>
+
+        <div class="grupo-form col-inteira">
+          <label class="label-form" for="peso-pet">Peso (kg)</label>
+          <input type="number" id="peso-pet" class="input-form"
+                 placeholder="Ex: 4.5" step="0.1" min="0.1" max="999">
+          <span class="msg-erro" id="erro-peso-pet"></span>
+        </div>
+
+        <div class="grupo-form col-inteira">
+          <label class="label-form" for="observacoes-pet">Observações</label>
+          <textarea id="observacoes-pet" class="textarea-form"
+                    placeholder="Alergias, cuidados especiais, temperamento..."></textarea>
+        </div>
+
+      </div>
+
+      <div class="modal-rodape">
+        <button type="button" class="btn btn-secundario" onclick="fecharModalPet()">Cancelar</button>
+        <button type="submit" id="btn-salvar-pet" class="btn btn-primario">Salvar</button>
+      </div>
+    </form>
+
+  </div>
+</div>
+
+<div id="modal-registro" class="fundo-modal">
+  <div class="modal">
+
+    <div class="modal-topo">
+      <h2 class="modal-titulo" id="titulo-modal-registro">Novo Cuidado</h2>
+      <button class="btn-fechar-modal" onclick="fecharModalRegistro()">✕</button>
+    </div>
+
+    <form id="form-registro" onsubmit="event.preventDefault(); salvarRegistro()">
+      <div class="grade-form">
+
+        <div class="grupo-form col-inteira">
+          <label class="label-form" for="pet-id-registro">Pet *</label>
+          <select id="pet-id-registro" class="select-form">
+            <option value="">Selecione o pet...</option>
+          </select>
+          <span class="msg-erro" id="erro-pet-reg"></span>
+        </div>
+
+        <div class="grupo-form">
+          <label class="label-form" for="tipo-registro">Tipo de Cuidado *</label>
+          <select id="tipo-registro" class="select-form">
+            <option value="">Selecione...</option>
+            <option value="feeding">🍖 Alimentação</option>
+            <option value="cleaning">🧹 Limpeza do Recinto</option>
+            <option value="vet">🩺 Consulta Veterinária</option>
+            <option value="medication">💊 Medicação</option>
+            <option value="exercise">🏃 Exercício / Passeio</option>
+            <option value="grooming">✂️ Tosa / Banho</option>
+            <option value="other">📝 Outro</option>
+          </select>
+          <span class="msg-erro" id="erro-tipo-reg"></span>
+        </div>
+
+        <div class="grupo-form">
+          <label class="label-form" for="data-registro">Data *</label>
+          <input type="date" id="data-registro" class="input-form">
+          <span class="msg-erro" id="erro-data-reg"></span>
+        </div>
+
+        <div class="grupo-form col-inteira">
+          <label class="label-form" for="titulo-registro">Título *</label>
+          <input type="text" id="titulo-registro" class="input-form"
+                 placeholder="Ex: Ração da manhã, Vacina antirrábica..." maxlength="100">
+          <span class="msg-erro" id="erro-titulo-reg"></span>
+        </div>
+
+        <div class="grupo-form">
+          <label class="label-form" for="horario-registro">Horário</label>
+          <input type="time" id="horario-registro" class="input-form">
+        </div>
+
+        <div class="grupo-form">
+          <label class="label-form" for="proximo-registro">Próximo Agendamento</label>
+          <input type="date" id="proximo-registro" class="input-form">
+        </div>
+
+        <div class="grupo-form col-inteira">
+          <label class="label-form" for="desc-registro">Descrição / Observações</label>
+          <textarea id="desc-registro" class="textarea-form"
+                    placeholder="Dosagem, observações do veterinário, detalhes..."></textarea>
+        </div>
+
+      </div>
+
+      <div class="modal-rodape">
+        <button type="button" class="btn btn-secundario" onclick="fecharModalRegistro()">Cancelar</button>
+        <button type="submit" id="btn-salvar-registro" class="btn btn-primario">Salvar</button>
+      </div>
+    </form>
+
+  </div>
+</div>
+
+<div id="fundo-confirmar" class="fundo-confirmar">
+  <div class="caixa-confirmar">
+    <div class="icone-confirmar">⚠️</div>
+    <div class="titulo-confirmar" id="titulo-confirmar">Confirmar ação</div>
+    <div class="desc-confirmar"  id="desc-confirmar"></div>
+    <div class="acoes-confirmar">
+      <button id="btn-confirmar-nao" class="btn btn-secundario">Cancelar</button>
+      <button id="btn-confirmar-sim" class="btn btn-perigo">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<div id="container-toast" class="container-toast"></div>
+<script src="assets/app.js"></script>
+</body>
+</html>
