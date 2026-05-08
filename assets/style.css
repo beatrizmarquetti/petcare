@@ -4,21 +4,41 @@
 :root {
   --cor-fundo:        #fdf8f2;
   --cor-branco:       #ffffff;
-  --cor-fundo2:       #fef3e2;
-  --cor-borda:        #e8d9c4;
+  --cor-fundo2:       #f5ead9;
+  --cor-borda:        #e0cfb8;
   --cor-texto:        #2d1f0e;
   --cor-texto2:       #6b4f2e;
   --cor-texto3:       #a07850;
-  --cor-laranja:      #e8742a;
-  --cor-laranja-claro:#fde8d4;
+  --cor-laranja:      #a67c52;
+  --cor-laranja-claro:#f0e2d0;
+  --cor-laranja-fim:  #c19a7c;
+  --cor-laranja-hover:#8b6741;
   --cor-verde:        #4caf7d;
   --cor-verde-claro:  #d4f0e2;
   --cor-vermelho:     #e84444;
   --cor-vermelho-claro:#fde4e4;
+  --cor-aviso:        #d49020;
   --sombra:           0 4px 16px rgba(45, 31, 14, 0.1);
   --borda-radius:     16px;
   --borda-radius-sm:  10px;
   --transicao:        0.2s ease;
+}
+
+body.modo-escuro {
+  --cor-fundo:        #1a1410;
+  --cor-branco:       #2a221c;
+  --cor-fundo2:       #36281e;
+  --cor-borda:        #3d3328;
+  --cor-texto:        #f0e8de;
+  --cor-texto2:       #d4c4ad;
+  --cor-texto3:       #a89578;
+  --cor-laranja:      #c89b73;
+  --cor-laranja-claro:#3d2f22;
+  --cor-laranja-fim:  #d8b08a;
+  --cor-laranja-hover:#dcb088;
+  --cor-verde-claro:  #2a3a2f;
+  --cor-vermelho-claro:#3d2929;
+  --sombra:           0 4px 16px rgba(0, 0, 0, 0.4);
 }
 
 * {
@@ -111,7 +131,7 @@ body {
 
 /* ── Banner do Dashboard ────────────────────────────────── */
 .banner {
-  background: linear-gradient(135deg, var(--cor-laranja), #f5961a);
+  background: linear-gradient(135deg, var(--cor-laranja), var(--cor-laranja-fim));
   border-radius: var(--borda-radius);
   padding: 2.5rem;
   color: white;
@@ -203,7 +223,7 @@ body {
 }
 
 .btn-primario:hover {
-  background-color: #d4641a;
+  background-color: var(--cor-laranja-hover);
   transform: translateY(-1px);
   box-shadow: var(--sombra);
 }
@@ -290,7 +310,7 @@ body {
   position: absolute;
   top: 0; left: 0; right: 0;
   height: 4px;
-  background: linear-gradient(90deg, var(--cor-laranja), #f5a623);
+  background: linear-gradient(90deg, var(--cor-laranja), var(--cor-laranja-fim));
   opacity: 0;
   transition: var(--transicao);
 }
@@ -758,4 +778,153 @@ body {
   background-color: var(--cor-verde);
   border-color: var(--cor-verde);
   color: white;
+}
+
+/* ── Modo escuro: ajustes pontuais ──────────────────────── */
+body.modo-escuro .toast {
+  background-color: #36281e;
+  color: var(--cor-texto);
+}
+
+body.modo-escuro .tipo-feeding    { background:#3a2f1a; color:#e8b850; }
+body.modo-escuro .tipo-cleaning   { background:#1a2a3a; color:#5cb0e8; }
+body.modo-escuro .tipo-vet        { background:#3a1a1a; color:#ff6060; }
+body.modo-escuro .tipo-medication { background:#2a1a3a; color:#b070e8; }
+body.modo-escuro .tipo-exercise   { background:#1a3a22; color:#5be080; }
+body.modo-escuro .tipo-grooming   { background:#3a1a2a; color:#e860a8; }
+body.modo-escuro .tipo-other      { background:#2a2a2a; color:#b0b0b0; }
+
+body.modo-escuro .badge.idade {
+  background-color: #2a2540;
+  color: #a89eff;
+}
+
+/* ── Botão de alternar tema ─────────────────────────────── */
+.btn-tema {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.4rem 0.6rem;
+  border-radius: var(--borda-radius-sm);
+  font-size: 1.15rem;
+  color: var(--cor-texto2);
+  transition: var(--transicao);
+  margin-left: 0.25rem;
+}
+
+.btn-tema:hover {
+  background-color: var(--cor-laranja-claro);
+  transform: scale(1.1);
+}
+
+/* ── Botão voltar ao topo ───────────────────────────────── */
+.btn-topo {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: none;
+  background-color: var(--cor-laranja);
+  color: white;
+  font-size: 1.4rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: var(--sombra);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(20px);
+  transition: var(--transicao);
+  z-index: 90;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-topo.visivel {
+  opacity: 1;
+  pointer-events: all;
+  transform: translateY(0);
+}
+
+.btn-topo:hover {
+  background-color: var(--cor-laranja-hover);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(45, 31, 14, 0.2);
+}
+
+/* ── Animação de entrada nos cards ──────────────────────── */
+@keyframes entrarCard {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.card-pet,
+.card-stat,
+.lista-registros .item-registro {
+  animation: entrarCard 0.4s ease backwards;
+}
+
+.card-stat:nth-child(1), .card-pet:nth-child(1), .lista-registros .item-registro:nth-child(1) { animation-delay: 0.05s; }
+.card-stat:nth-child(2), .card-pet:nth-child(2), .lista-registros .item-registro:nth-child(2) { animation-delay: 0.10s; }
+.card-stat:nth-child(3), .card-pet:nth-child(3), .lista-registros .item-registro:nth-child(3) { animation-delay: 0.15s; }
+.card-stat:nth-child(4), .card-pet:nth-child(4), .lista-registros .item-registro:nth-child(4) { animation-delay: 0.20s; }
+.card-pet:nth-child(n+5), .lista-registros .item-registro:nth-child(n+5) { animation-delay: 0.25s; }
+
+/* ── Contador de caracteres ─────────────────────────────── */
+.contador-chars {
+  font-size: 0.75rem;
+  color: var(--cor-texto3);
+  text-align: right;
+  font-weight: 600;
+  margin-top: -0.15rem;
+  transition: color var(--transicao);
+}
+
+.contador-chars.proximo-limite {
+  color: var(--cor-aviso);
+  font-weight: 700;
+}
+
+.contador-chars.no-limite {
+  color: var(--cor-vermelho);
+  font-weight: 800;
+}
+
+/* ── Indicador de "próximo agendamento vencido" ─────────── */
+.item-registro.vencido {
+  border-left: 4px solid var(--cor-vermelho);
+  background-color: var(--cor-vermelho-claro);
+}
+
+body.modo-escuro .item-registro.vencido {
+  background-color: #3d2929;
+}
+
+.badge-vencido {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  padding: 0.1rem 0.5rem;
+  margin-left: 0.4rem;
+  border-radius: 12px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  background-color: var(--cor-vermelho);
+  color: white;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  animation: pulsarVencido 1.8s ease-in-out infinite;
+}
+
+@keyframes pulsarVencido {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.65; }
 }

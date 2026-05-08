@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Diário de Cuidados para Pets</title>
-  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
 
@@ -13,13 +13,13 @@
 
     <a class="logo" href="#" onclick="mostrarTela('dashboard'); return false;">
       <span>🐾</span>
-      <span>PetCare</span>
+      <span>HappyPaws</span>
     </a>
-
     <nav class="nav">
       <button class="btn-nav ativo" data-tela="dashboard">🏠 Início</button>
       <button class="btn-nav"       data-tela="pets">🐶 Pets</button>
       <button class="btn-nav"       data-tela="registros">📋 Registros</button>
+      <button class="btn-tema" id="btn-tema" title="Alternar modo escuro" aria-label="Alternar modo escuro">🌙</button>
     </nav>
 
   </div>
@@ -30,7 +30,7 @@
   <section id="tela-dashboard" class="tela ativa">
 
     <div class="banner">
-      <h1>Bem-vindo ao PetCare! 🐾</h1>
+      <h1>Bem-vindo ao HappyPaws! 🐾</h1>
       <p>Acompanhe a saúde, alimentação e bem-estar dos seus pets.</p>
     </div>
 
@@ -196,7 +196,7 @@
         <div class="grupo-form">
           <label class="label-form" for="nome-pet">Nome *</label>
           <input type="text" id="nome-pet" class="input-form"
-                 placeholder="Ex: Rex, Luna, Bolinha..." maxlength="50">
+                 placeholder="Ex: Rex, Luna, Bolinha..." maxlength="50" data-contador>
           <span class="msg-erro" id="erro-nome-pet"></span>
         </div>
 
@@ -239,7 +239,7 @@
         <div class="grupo-form col-inteira">
           <label class="label-form" for="observacoes-pet">Observações</label>
           <textarea id="observacoes-pet" class="textarea-form"
-                    placeholder="Alergias, cuidados especiais, temperamento..."></textarea>
+                    placeholder="Alergias, cuidados especiais, temperamento..." maxlength="500" data-contador></textarea>
         </div>
 
       </div>
@@ -296,7 +296,7 @@
         <div class="grupo-form col-inteira">
           <label class="label-form" for="titulo-registro">Título *</label>
           <input type="text" id="titulo-registro" class="input-form"
-                 placeholder="Ex: Ração da manhã, Vacina antirrábica..." maxlength="100">
+                 placeholder="Ex: Ração da manhã, Vacina antirrábica..." maxlength="100" data-contador>
           <span class="msg-erro" id="erro-titulo-reg"></span>
         </div>
 
@@ -313,7 +313,7 @@
         <div class="grupo-form col-inteira">
           <label class="label-form" for="desc-registro">Descrição / Observações</label>
           <textarea id="desc-registro" class="textarea-form"
-                    placeholder="Dosagem, observações do veterinário, detalhes..."></textarea>
+                    placeholder="Dosagem, observações do veterinário, detalhes..." maxlength="500" data-contador></textarea>
         </div>
 
       </div>
@@ -339,7 +339,9 @@
   </div>
 </div>
 
+<button id="btn-topo" class="btn-topo" title="Voltar ao topo" aria-label="Voltar ao topo">↑</button>
+
 <div id="container-toast" class="container-toast"></div>
-<script src="assets/js/app.js"></script>
+<script src="assets/app.js"></script>
 </body>
 </html>

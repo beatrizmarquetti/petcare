@@ -295,6 +295,10 @@ async function abrirModalPet(petId = null) {
     if (primeiroEmoji) primeiroEmoji.classList.add('selecionado');
   }
 
+  porSeletor('#form-pet [data-contador]').forEach(function(c) {
+    c.dispatchEvent(new Event('input'));
+  });
+
   porId('modal-pet').classList.add('aberto');
 }
 
@@ -492,12 +496,16 @@ function renderizarRegistrosDetalhe(registros, tipo) {
 }
 
 function criarItemRegistro(registro, mostrarAcoes) {
-  function criarItemRegistro(registro, mostrarAcoes) {
   var tipo      = TIPOS_CUIDADO[registro.tipo] || TIPOS_CUIDADO.other;
-  var proximo   = registro.proximo ? ' • Próximo: ' + formatarData(registro.proximo) : '';
+  var concluido = registro.concluido == 1;
+
+  var hojeStr = new Date().toISOString().split('T')[0];
+  var vencido = registro.proximo && registro.proximo < hojeStr && !concluido;
+
+  var badgeVencido = vencido ? ' <span class="badge-vencido">⚠️ Vencido</span>' : '';
+  var proximo   = registro.proximo ? ' • Próximo: ' + formatarData(registro.proximo) + badgeVencido : '';
   var nomePet   = registro.nome_pet ? '🐾 ' + registro.nome_pet + ' • ' : '';
   var horario   = registro.horario ? ' às ' + registro.horario : '';
-  var concluido = registro.concluido == 1;
 
   var descricao = registro.descricao
     ? '<div class="desc-registro">' + registro.descricao + '</div>'
@@ -523,41 +531,13 @@ function criarItemRegistro(registro, mostrarAcoes) {
       </div>`;
   }
 
+  var classes = 'item-registro';
+  if (concluido) classes += ' concluido';
+  if (vencido)   classes += ' vencido';
+
   return `
-    <div class="item-registro ${concluido ? 'concluido' : ''}">
+    <div class="${classes}">
       ${btnConcluir}
-      <div class="icone-tipo ${tipo.classe}">${tipo.icone}</div>
-      <div class="corpo-registro">
-        <div class="titulo-registro">${registro.titulo}</div>
-        <div class="meta-registro">${nomePet}${formatarData(registro.data)}${horario}${proximo}</div>
-        ${descricao}
-      </div>
-      ${acoes}
-    </div>`;
-}
-  var tipo    = TIPOS_CUIDADO[registro.tipo] || TIPOS_CUIDADO.other;
-  var proximo = registro.proximo ? ' • Próximo: ' + formatarData(registro.proximo) : '';
-
-  var nomePet = registro.nome_pet ? '🐾 ' + registro.nome_pet + ' • ' : '';
-
-  var horario = registro.horario ? ' às ' + registro.horario : '';
-
-  var descricao = registro.descricao
-    ? '<div class="desc-registro">' + registro.descricao + '</div>'
-    : '';
-
-  var acoes = '';
-  if (mostrarAcoes) {
-    var petId = registro.pet_id || estado.petAtivo;
-    acoes = `
-      <div class="acoes-registro">
-        <button class="btn btn-pequeno btn-secundario" onclick="abrirModalRegistro(${petId}, ${registro.id})" title="Editar">✏️</button>
-        <button class="btn btn-pequeno btn-perigo"     onclick="excluirRegistro(${registro.id})" title="Excluir">🗑️</button>
-      </div>`;
-  }
-
-  return `
-    <div class="item-registro">
       <div class="icone-tipo ${tipo.classe}">${tipo.icone}</div>
       <div class="corpo-registro">
         <div class="titulo-registro">${registro.titulo}</div>
@@ -641,6 +621,10 @@ async function abrirModalRegistro(petId = null, registroId = null) {
       porId('proximo-registro').value   = r.proximo || '';
     }
   }
+
+  porSeletor('#form-registro [data-contador]').forEach(function(c) {
+    c.dispatchEvent(new Event('input'));
+  });
 
   porId('modal-registro').classList.add('aberto');
 }
@@ -809,13 +793,82 @@ async function alternarConcluido(id, concluido) {
     mostrarAviso('Erro ao atualizar registro.', 'erro');
   }
 }
+function inicializarTema() {
+  var temaSalvo = localStorage.getItem('petcare-tema');
+  if (temaSalvo === 'escuro') document.body.classList.add('modo-escuro');
+  atualizarIconeTema();
+
+  var btn = porId('btn-tema');
+  if (!btn) return;
+  btn.addEventListener('click', function() {
+    document.body.classList.toggle('modo-escuro');
+    var escuro = document.body.classList.contains('modo-escuro');
+    localStorage.setItem('petcare-tema', escuro ? 'escuro' : 'claro');
+    atualizarIconeTema();
+  });
+}
+
+function atualizarIconeTema() {
+  var btn = porId('btn-tema');
+  if (!btn) return;
+  var escuro = document.body.classList.contains('modo-escuro');
+  btn.textContent = escuro ? '☀️' : '🌙';
+  btn.title = escuro ? 'Voltar ao modo claro' : 'Alternar para modo escuro';
+}
+
+function inicializarBotaoTopo() {
+  var btn = porId('btn-topo');
+  if (!btn) return;
+
+  function checar() {
+    if (window.scrollY > 300) btn.classList.add('visivel');
+    else                       btn.classList.remove('visivel');
+  }
+  window.addEventListener('scroll', checar);
+  checar();
+
+  btn.addEventListener('click', function() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+}
+
+function inicializarContadores() {
+  porSeletor('[data-contador]').forEach(function(campo) {
+    var max = parseInt(campo.getAttribute('maxlength'), 10);
+    if (!max) return;
+
+    var contador = document.createElement('span');
+    contador.className = 'contador-chars';
+    campo.parentNode.insertBefore(contador, campo.nextSibling);
+
+    function atualizar() {
+      var atual = campo.value.length;
+      contador.textContent = atual + ' / ' + max;
+      contador.classList.remove('proximo-limite', 'no-limite');
+      if (atual >= max)            contador.classList.add('no-limite');
+      else if (atual >= max * 0.9) contador.classList.add('proximo-limite');
+    }
+
+    campo.addEventListener('input', atualizar);
+    // Atualiza também quando o form é resetado (modal de edição)
+    var form = campo.closest('form');
+    if (form) form.addEventListener('reset', function() { setTimeout(atualizar, 0); });
+
+    atualizar();
+  });
+}
+
 document.addEventListener('DOMContentLoaded', function() {
-  
+
+  inicializarTema();
+  inicializarBotaoTopo();
+  inicializarContadores();
+
   var campaNascimento = porId('nascimento-pet');
   if (campaNascimento) {
     var hoje = new Date().toISOString().split('T')[0];
     campaNascimento.setAttribute('max', hoje);
-  } 
+  }
 
   porSeletor('.btn-nav[data-tela]').forEach(function(btn) {
     btn.addEventListener('click', function() {
